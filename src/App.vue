@@ -1,32 +1,59 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app class="app_container">
+    <component :is="layout + '-layout'">
+      <router-view></router-view>
+    </component>
+  </v-app>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import EmptyLayout from './views/empty-layout.vue'
+import Login from './components/login/Login.vue'
+import MainLayout from './views/main-layout.vue';
+import Profile from './components/profile/Profile.vue';
+import Users from './components/users/Users.vue';
+import ProfileInformation from './components/profile-information/ProfileInformation';
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+export default {
+  name: 'App',
+  data () {
+    return {
+      error: '',
     }
-  }
-}
+  },
+  created () {
+    this.auth();
+  },
+  methods: {
+    auth () {
+      this.$store.dispatch("getAuth");
+    },
+  },
+  computed: {
+    layout () {
+      return this.$route.meta.layout;
+    },
+  },
+  components: {
+    Login,
+    EmptyLayout,
+    MainLayout,
+    Profile,
+    Users,
+    ProfileInformation,
+  },
+};
+</script>
+
+<style lang="sass">
+html
+  height: 100%
+
+body
+  min-height:100%
+  overflow: hidden
+
+*
+  list-style: none
+  text-decoration: none
 </style>
