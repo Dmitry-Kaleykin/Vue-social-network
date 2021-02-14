@@ -1,19 +1,42 @@
 # vue-social-network
 
-## Project setup
+### Описание серверного API
 ```
-yarn install
+AUTH
+
+auth/login	
+auth/logout	
+auth/me	
+
+SECURITY	
+
+security/get-captcha-url	
+
+USERS	
+
+/users
+
+PROFILE	
+
+profile/status/{userId}	
+profile/status	
+profile/{userId}	
+profile	
+profile/photo	
+
+FOLLOWING	
+
+follow/{userId}	
+
+Ссылка: https://social-network.samuraijs.com/docs
 ```
 
-### Compiles and hot-reloads for development
+### Выполнено
 ```
-yarn serve
-```
-
-### Compiles and minifies for production
-```
-yarn build
+В данный момент вся функциональность API реализована.
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### В разработке
+```
+Валидация форм, индикаторы загрузки, обработка ошибок.
+```
