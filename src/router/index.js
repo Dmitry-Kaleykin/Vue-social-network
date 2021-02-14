@@ -25,7 +25,7 @@ const routes = [
     meta: {layout: 'empty'},
   },
   {
-    path: '/profile',
+    path: '/profile/:id',
     name: 'Profile',
     component: Profile,
     meta: {layout: 'main'},

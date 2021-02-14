@@ -41,7 +41,7 @@ export default {
     },
   },
   actions: {
-    postLogin ({state, commit}) {
+    postLogin ({state, commit, rootState}) {
       commit('switchLoadingOn');
       postLoginAPI({
         email: state.email,
@@ -56,7 +56,7 @@ export default {
               email: null,
               login: null,
             }, {root: true});
-            router.push('/profile');
+            router.push(`/profile/${rootState.loggedUser.id}`);
           }
         })
         .catch(error => {

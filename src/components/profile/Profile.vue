@@ -2,22 +2,29 @@
   <div class="profile">
     <v-sheet class="profile_information" elevation="1">
       <div class="profile_avatar">
-        <v-img class="avatar" alt="avatar" src="../../assets/noimg.jpg"></v-img>
-        <div class="avatar_selector">
-          <v-icon x-large>mdi-plus-circle-outline</v-icon>
-          <p>change avatar</p>
+        <v-img class="avatar" alt="avatar" :src="avatar || noIMG"></v-img>
+        <div class="avatar_selector" v-if="isOwner">
+          <v-file-input
+            color="#5cbbf6"
+            light
+            class="avatar_input"
+            accept="image/png, image/jpeg, image/bmp"
+            prepend-icon="mdi-camera"
+            @change="sendAvatar"
+          ></v-file-input>
         </div>
       </div>
       <div class="profile_fullname">
-        <v-text-field placeholder="change status"></v-text-field>
-        <h1>Fullname</h1>
+        <v-text-field color="#5cbbf6" :placeholder="status || 'change status'" v-if="isOwner" v-model="status" @blur="sendStatus"></v-text-field>
+        <p v-else>{{status}}</p>
+        <h1>{{fullName}}</h1>
       </div>
     </v-sheet>
-    <div class="profile_description">
+    <div  class="profile_description">
       <v-sheet class="description">
         <p class="description_header">Description</p>
         <v-divider></v-divider>
-        <p class="description_content">Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium sequi, odio illum perspiciatis nemo vel quaerat. Quisquam numquam cum maxime quae? Eveniet obcaecati sapiente laboriosam fugit cumque consequatur excepturi omnis.</p>
+        <p class="description_content">{{description || 'User did not provide information'}}</p>
       </v-sheet>
     </div>
     <div class="profile_contacts">
@@ -25,12 +32,12 @@
         <v-icon 
           large
           tag="a"
-          href="#"
           class="contacts_link"
-          v-for="link in socialLinks"
-          :key="link.url"
-          :disabled="!link.active">
-          {{link.icon}}
+          v-for="(value, name, index) in contacts"
+          :key="name"
+          :disabled="!value"
+          :href="value">
+          {{icons[index]}}
         </v-icon>
       </v-sheet>
     </div>
@@ -38,26 +45,68 @@
 </template>
 
 <script>
+import noIMG from "../../assets/noimg.jpg";
+
 export default {
   name: "profile",
   data () {
     return {
-      socialLinks: [
-        {url: 'github', icon: 'mdi-github', active: true},
-        {url: 'vk', icon: 'mdi-vk', active: true},
-        {url: 'facebook', icon: 'mdi-facebook', active: false},
-        {url: 'instagram', icon: 'mdi-instagram', active: true},
-        {url: 'twitter', icon: 'mdi-twitter', active: false},
-        {url: 'website', icon: 'mdi-web', active: false},
-        {url: 'youtube', icon: 'mdi-youtube', active: false},
+      noIMG,
+      icons: [ // According to the API contacts sequence
+        'mdi-youtube',
+        'mdi-web',
+        'mdi-twitter',
+        'mdi-instagram',
+        'mdi-facebook',
+        'mdi-vk',
+        'mdi-github',
       ],
     }
   },
+  mounted () {
+    this.$store.dispatch('getUserProfile', this.routeId);
+    this.$store.dispatch('getUserProfileStatus', this.routeId);
+  },
   methods: {
-    
+    sendAvatar(avatar) {
+      this.$store.dispatch('putUserProfileAvatar', avatar);
+    },
+    sendStatus () {
+      this.$store.dispatch('putUserProfileStatus');
+    },
   },
   computed: {
-    
+    status: {
+      get () {
+        return this.$store.state.profile.status;
+      },
+      set (value) {
+        this.$store.commit('updateStatus', value);
+      }
+    },
+    isOwner () {
+      return this.routeId == this.$store.state.loggedUser.id;
+    },
+    message () {
+      return this.$store.state.profile.message;
+    },
+    routeId () {
+      return this.$route.params.id;
+    },
+    avatar () {
+      return this.$store.state.profile.profileData?.photos?.small;
+    },
+    fullName () {
+      return this.$store.state.profile.profileData?.fullName;
+    },
+    description () {
+      return this.$store.state.profile.profileData?.lookingForAJobDescription;
+    },
+    contacts () {
+      let contactLinks = this.$store.state.profile.profileData?.contacts;
+      delete contactLinks.mainLink; // Extra link removed
+      return contactLinks;
+    },
   },
 }
 </script>
@@ -73,6 +122,8 @@ export default {
     padding: 0.5rem 1rem 1rem 1rem
     width: 100%
     display: flex
+  &_description
+    width: 100%
   &_contacts
     width: 100%
   &_fullname
@@ -88,20 +139,19 @@ export default {
 .avatar
   height: 100%
   width: 100%
-  cursor: pointer
+  &_input
+    margin: 0 2rem
   &_selector
-    top: 200px
-    display: flex
-    flex-direction: column
-    justify-content: center
-    align-items: center
-  &:hover ~ &_selector
+    color: #e2e2e2
     position: relative
-    top: -200px
-    pointer-events: none
+    top: 200px
+    transition: ease .5s
     height: 100%
-    background-color: rgba(0, 0, 0, 0.1)
-    transition: all ease 0.5s
+    background-color: rgba(255,255,255, 0.4)
+    &:hover
+      top: -80px
+  &:hover ~ &_selector
+    top: -60px
 
 .description
   padding: 1rem

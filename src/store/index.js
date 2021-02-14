@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import login from './loginPage/login'
 import users from './usersPage/users'
 import profileInformation from './profileInformationPage/profileInformationPage'
+import profile from './profilePage/profile'
 import mainLayout from './mainLayout/mainLayout'
 import router from '../router/index'
 import { getAuthAPI } from '../api/loginPageAPI/authAPI'
@@ -30,12 +31,12 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    getAuth ({commit}) {
+    getAuth ({commit, state}) {
       getAuthAPI()
         .then(response => {
           if (response.resultCode === 0) {
             commit('setLoggedUserData', response.data);
-            router.push('/profile');
+            router.push(`/profile/${state.loggedUser.id}`);
           }
         })
         .catch(error => {
@@ -49,5 +50,6 @@ export default new Vuex.Store({
     mainLayout,
     users,
     profileInformation,
+    profile,
   }
 })

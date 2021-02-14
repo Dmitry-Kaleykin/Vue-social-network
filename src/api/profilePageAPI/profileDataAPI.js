@@ -18,9 +18,9 @@ export function putUserProfileStatusAPI (status) {
     .then(response => response.data);
 }
 
-export function putUserProfileAvatarAPI (photo) {
+export function putUserProfileAvatarAPI (avatar) {
   return instance
-    .put('profile/photo', photo, {
+    .put('profile/photo', avatar, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

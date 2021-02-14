@@ -54,14 +54,17 @@
 export default {
   name: "main-layout",
   data: () => ({
-    pages: [
-      {title: "Profile", icon: "mdi-account", url: '/profile'},
+    pages: [],
+    sidebar: false,
+  }),
+  created () {
+    this.pages = [
+      {title: "Profile", icon: "mdi-account", url: `/profile/${this.loggedUserId}`},
       {title: "Dialogs", icon: "mdi-message", url: '/dialogs'},
       {title: "Users", icon: "mdi-account-multiple", url: '/users'},
       {title: "Profile information", icon: "mdi-account-cog", url: '/info'},
-    ],
-    sidebar: false,
-  }),
+    ]
+  },
   methods: {
     toggleSidebar () {
       this.sidebar = !this.sidebar
@@ -72,8 +75,11 @@ export default {
   },
   computed: {
     fullname () {
-      return this.$store.state.loggedUser.login
+      return this.$store.state.loggedUser.login;
     },
+    loggedUserId () {
+      return this.$store.state.loggedUser.id;
+    }
   },
 }
 </script>
